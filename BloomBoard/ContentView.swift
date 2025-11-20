@@ -6,16 +6,13 @@
 //
 
 import SwiftUI
+import SwiftData
 
 struct ContentView: View {
+    @Query var posts: [Post]
+    
     var body: some View {
-        VStack {
-            Image(systemName: "globe")
-                .imageScale(.large)
-                .foregroundStyle(.tint)
-            Text("Hello, world!")
-        }
-        .padding()
+        PostListView(posts: posts)
     }
 }
 

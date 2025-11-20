@@ -6,6 +6,7 @@
 //
 
 import SwiftUI
+import SwiftData
 
 @main
 struct BloomBoardApp: App {
@@ -13,5 +14,6 @@ struct BloomBoardApp: App {
         WindowGroup {
             ContentView()
         }
+        .modelContainer(for: Post.self)
     }
 }
