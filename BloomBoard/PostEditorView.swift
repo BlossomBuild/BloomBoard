@@ -11,6 +11,7 @@ import PhotosUI
 struct PostEditorView: View {
     @State private var title: String = ""
     @State private var selectedImage: PhotosPickerItem? = nil
+    @State private var postImage: UIImage? = nil
     
     var body: some View {
         VStack {
@@ -23,12 +24,29 @@ struct PostEditorView: View {
                 .padding(.horizontal)
             
             PhotosPicker(selection: $selectedImage, matching: .images) {
-                Text("Upload Image")
-                    .foregroundStyle(.gray)
-                    .frame(maxWidth: .infinity, maxHeight: 220)
-                    .background(.ultraThinMaterial)
-                    .clipShape(.rect(cornerRadius: 10))
-                    .padding()
+                if let image = postImage {
+                    Image(uiImage: image)
+                        .resizable()
+                        .scaledToFit()
+                        .frame(maxWidth: .infinity, maxHeight: 220)
+                        .padding()
+                } else {
+                    Text("Upload Image")
+                        .foregroundStyle(.gray)
+                        .frame(maxWidth: .infinity, maxHeight: 220)
+                        .background(.ultraThinMaterial)
+                        .clipShape(.rect(cornerRadius: 10))
+                        .padding()
+                }
+            }
+            .onChange(of: selectedImage) { _, newValue in
+                Task {
+                    guard let data = try? await newValue?.loadTransferable(type: Data.self) else { return }
+                    
+                    await MainActor.run {
+                        postImage = UIImage(data: data)
+                    }
+                }
             }
         }
     }
