@@ -25,11 +25,30 @@ struct PostEditorView: View {
             
             PhotosPicker(selection: $selectedImage, matching: .images) {
                 if let image = postImage {
-                    Image(uiImage: image)
-                        .resizable()
-                        .scaledToFit()
-                        .frame(maxWidth: .infinity, maxHeight: 220)
-                        .padding()
+                    ZStack {
+                        Image(uiImage: image)
+                            .resizable()
+                            .scaledToFit()
+                            .frame(maxWidth: .infinity, maxHeight: 220)
+                            .padding()
+                        
+                        HStack {
+                            Image(systemName: "arrow.clockwise")
+                                .padding()
+                                .background(.ultraThinMaterial, in: Circle())
+                                .foregroundStyle(.button)
+                            
+                            Button {
+                                selectedImage = nil
+                                postImage = nil
+                            } label: {
+                                Image(systemName: "trash")
+                                    .padding()
+                                    .background(.ultraThinMaterial, in: Circle())
+                                    .foregroundStyle(.button)
+                            }
+                        }
+                    }
                 } else {
                     Text("Upload Image")
                         .foregroundStyle(.gray)
