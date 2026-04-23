@@ -16,6 +16,7 @@ struct PostEditorView: View {
     @State private var title: String = ""
     @State private var selectedImage: PhotosPickerItem? = nil
     @State private var postImage: UIImage? = nil
+    @FocusState private var titleFocus: Bool
     
     var body: some View {
         NavigationStack {
@@ -23,6 +24,7 @@ struct PostEditorView: View {
                 TextField("Title", text: $title, axis: .vertical)
                     .padding(.horizontal)
                     .bold()
+                    .focused($titleFocus)
                 
                 Rectangle()
                     .frame(height: 2)
@@ -72,6 +74,9 @@ struct PostEditorView: View {
                         }
                     }
                 }
+            }
+            .onAppear {
+                titleFocus = true
             }
             .navigationTitle("Create Post")
             .navigationBarTitleDisplayMode(.inline)

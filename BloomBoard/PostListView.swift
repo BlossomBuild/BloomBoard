@@ -8,15 +8,30 @@
 import SwiftUI
 
 struct PostListView: View {
+    @State private var showEditor: Bool = false
     let posts: [Post]
     
     var body: some View {
-        List(posts) { post in
-            PostItemView(post: post)
-        }
-        .overlay {
-            if posts.isEmpty {
-                ContentUnavailableView("No posts created", systemImage: "tray")
+        NavigationStack {
+            List(posts) { post in
+                PostItemView(post: post)
+            }
+            .overlay {
+                if posts.isEmpty {
+                    ContentUnavailableView("No posts created", systemImage: "tray")
+                }
+            }
+            .toolbar {
+                ToolbarItem(placement: .topBarTrailing) {
+                    Button {
+                        showEditor = true
+                    } label: {
+                        Image(systemName: "plus")
+                    }
+                }
+            }
+            .sheet(isPresented: $showEditor) {
+                PostEditorView()
             }
         }
     }
