@@ -9,6 +9,7 @@ import SwiftUI
 
 struct PostItemView: View {
     let post: Post
+    let onSelect: (Post) -> Void
     
     var hasImage: Bool {
         post.image != nil
@@ -16,9 +17,16 @@ struct PostItemView: View {
     
     var body: some View {
         VStack(alignment: .leading) {
-            Text(post.title)
-                .bold()
-                .font(.title3)
+            Button {
+                onSelect(post)
+            } label: {
+                Text(post.title)
+                    .bold()
+                    .font(.title3)
+                    .foregroundStyle(.button)
+                    .lineLimit(2)
+                    .truncationMode(.tail)
+            }
             
             HStack {
                 Text("Created \(post.creationDate, style: .date)")
@@ -31,5 +39,7 @@ struct PostItemView: View {
 }
 
 #Preview {
-    PostItemView(post: Post.testPosts[1])
+    PostItemView(post: Post.testPosts[1]) { selectedPost in
+        
+    }
 }

@@ -10,25 +10,31 @@ import SwiftData
 
 struct PostListView: View {
     @Environment(\.modelContext) private var modelContext
+    @State private var postDetailPath = NavigationPath()
     @State private var showEditor: Bool = false
     @State private var showDeleteAlert: Bool = false
     @State private var postToDelete: Post?
     let posts: [Post]
     
     var body: some View {
-        NavigationStack {
+        NavigationStack(path: $postDetailPath) {
             List(posts) { post in
-                PostItemView(post: post)
-                    .swipeActions(edge: .trailing) {
-                        Button {
-                            showDeleteAlert = true
-                            postToDelete = post
-                        } label: {
-                            Image(systemName: "trash")
-                                .tint(.red)
-                        }
+                PostItemView(post: post) {selectedPost in
+                    postDetailPath.append(selectedPost)
+                }
+                .swipeActions(edge: .trailing) {
+                    Button {
+                        showDeleteAlert = true
+                        postToDelete = post
+                    } label: {
+                        Image(systemName: "trash")
+                            .tint(.red)
                     }
+                }
             }
+            .navigationDestination(for: Post.self, destination: { selectedPost in
+                PostDetailView(post: selectedPost)
+            })
             .overlay {
                 if posts.isEmpty {
                     ContentUnavailableView("No posts created", systemImage: "tray")

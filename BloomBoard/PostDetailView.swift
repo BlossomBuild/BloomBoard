@@ -17,40 +17,38 @@ struct PostDetailView: View {
     }
     
     var body: some View {
-        NavigationStack {
-            VStack {
-                Text(post.title)
-                    .padding(.horizontal)
-                    .bold()
-                    .multilineTextAlignment(.leading)
-                    .textSelection(.enabled)
-                
-                if let image = postImage {
-                    Image(uiImage: image)
-                        .resizable()
-                        .scaledToFit()
-                        .clipShape(.rect(cornerRadius: 10))
-                        .padding()
-                        .frame(maxHeight: 250)
-                } else {
-                    Text("No image")
-                        .font(.subheadline)
-                        .foregroundStyle(.secondary)
-                        .frame(maxWidth: .infinity, maxHeight: 250)
-                        .background(.ultraThinMaterial)
-                        .clipShape(.rect(cornerRadius: 10))
-                        .padding()
-                }
+        VStack {
+            Text(post.title)
+                .padding(.horizontal)
+                .bold()
+                .multilineTextAlignment(.leading)
+                .textSelection(.enabled)
+            
+            if let image = postImage {
+                Image(uiImage: image)
+                    .resizable()
+                    .scaledToFit()
+                    .clipShape(.rect(cornerRadius: 10))
+                    .padding()
+                    .frame(maxHeight: 250)
+            } else {
+                Text("No image")
+                    .font(.subheadline)
+                    .foregroundStyle(.secondary)
+                    .frame(maxWidth: .infinity, maxHeight: 250)
+                    .background(.ultraThinMaterial)
+                    .clipShape(.rect(cornerRadius: 10))
+                    .padding()
             }
-            .toolbar {
-                ToolbarItem(placement: .topBarTrailing) {
-                    Button {
-                        
-                    } label: {
-                        Image(systemName: "pencil")
-                    }
-
+        }
+        .toolbar {
+            ToolbarItem(placement: .topBarTrailing) {
+                Button {
+                    
+                } label: {
+                    Image(systemName: "pencil")
                 }
+                
             }
         }
     }
