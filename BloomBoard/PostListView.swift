@@ -61,7 +61,7 @@ struct PostListView: View {
                 }
             }
             .sheet(isPresented: $showEditor) {
-                PostEditorView()
+                PostEditorView(mode: .creating)
             }
         }
     }

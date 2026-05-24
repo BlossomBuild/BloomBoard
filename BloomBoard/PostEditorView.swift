@@ -9,14 +9,36 @@ import SwiftUI
 import PhotosUI
 import SwiftData
 
+enum EditorMode {
+    case creating
+    case editing(Post)
+}
+
 struct PostEditorView: View {
     @Environment(\.dismiss) var dismiss
     @Environment(\.modelContext) var modelContext
     
-    @State private var title: String = ""
+    @State private var title: String
     @State private var selectedImage: PhotosPickerItem? = nil
     @State private var postImage: UIImage? = nil
+    @State private var didImageChange: Bool = false
     @FocusState private var titleFocus: Bool
+    let mode: EditorMode
+    
+    init(mode: EditorMode) {
+        self.mode = mode
+        
+        switch mode {
+        case .creating:
+            title = ""
+        case .editing(let post):
+            title = post.title
+            
+            if let data = post.image {
+                _postImage = State(initialValue: UIImage(data: data))
+            }
+        }
+    }
     
     var body: some View {
         NavigationStack {
@@ -48,6 +70,7 @@ struct PostEditorView: View {
                                 Button {
                                     selectedImage = nil
                                     postImage = nil
+                                    didImageChange = true
                                 } label: {
                                     Image(systemName: "trash")
                                         .padding()
@@ -71,6 +94,7 @@ struct PostEditorView: View {
                         
                         await MainActor.run {
                             postImage = UIImage(data: data)
+                            didImageChange = true
                         }
                     }
                 }
@@ -91,14 +115,7 @@ struct PostEditorView: View {
                 
                 ToolbarItem(placement: .topBarTrailing) {
                     Button {
-                        let newPost = Post(title: title)
-                        
-                        if let imageData = postImage?.jpegData(compressionQuality: 0.90) {
-                            newPost.image = imageData
-                        }
-                        modelContext.insert(newPost)
-                        try? modelContext.save()
-                        dismiss()
+                        saveButtonAction()
                     } label: {
                         Image(systemName: "square.and.arrow.down")
                     }
@@ -107,8 +124,34 @@ struct PostEditorView: View {
             }
         }
     }
+    
+    private func saveButtonAction() {
+        switch mode {
+        case .creating:
+            let newPost = Post(title: title)
+            
+            if let imageData = postImage?.jpegData(compressionQuality: 0.90) {
+                newPost.image = imageData
+            }
+            modelContext.insert(newPost)
+            
+        case .editing(let post):
+            post.title = title
+            
+            if didImageChange {
+                post.image = postImage?.jpegData(compressionQuality: 0.90)
+            }
+        }
+        
+        do {
+            try modelContext.save()
+            dismiss()
+        } catch {
+            modelContext.rollback()
+        }
+    }
 }
 
 #Preview {
-    PostEditorView()
+    PostEditorView(mode: .creating)
 }
