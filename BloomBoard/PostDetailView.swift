@@ -8,6 +8,9 @@
 import SwiftUI
 
 struct PostDetailView: View {
+    @State private var showEditor: Bool = false
+    
+    
     let post: Post
     var postImage: UIImage? {
         guard let imageData = post.image else {
@@ -44,12 +47,15 @@ struct PostDetailView: View {
         .toolbar {
             ToolbarItem(placement: .topBarTrailing) {
                 Button {
-                    
+                    showEditor = true
                 } label: {
                     Image(systemName: "pencil")
                 }
                 
             }
+        }
+        .sheet(isPresented: $showEditor) {
+            PostEditorView(mode: .editing(post))
         }
     }
 }

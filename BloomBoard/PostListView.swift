@@ -16,6 +16,11 @@ struct PostListView: View {
     @State private var postToDelete: Post?
     let posts: [Post]
     
+    var navigationTitle: String {
+        let count = posts.count
+        return String(format: "%@ (%d)", "Posts", count)
+    }
+    
     var body: some View {
         NavigationStack(path: $postDetailPath) {
             List(posts) { post in
@@ -51,6 +56,7 @@ struct PostListView: View {
                     }
                 }
             })
+            .navigationTitle(navigationTitle)
             .toolbar {
                 ToolbarItem(placement: .topBarTrailing) {
                     Button {

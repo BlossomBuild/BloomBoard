@@ -25,6 +25,15 @@ struct PostEditorView: View {
     @FocusState private var titleFocus: Bool
     let mode: EditorMode
     
+    var navigationTitle: String {
+        switch mode {
+        case .creating:
+            return "New Post"
+        case .editing:
+            return "Edit Post"
+        }
+    }
+    
     init(mode: EditorMode) {
         self.mode = mode
         
@@ -102,7 +111,7 @@ struct PostEditorView: View {
             .onAppear {
                 titleFocus = true
             }
-            .navigationTitle("Create Post")
+            .navigationTitle(navigationTitle)
             .navigationBarTitleDisplayMode(.inline)
             .toolbar {
                 ToolbarItem(placement: .topBarLeading) {

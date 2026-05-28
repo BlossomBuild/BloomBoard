@@ -2,14 +2,15 @@
 //  ContentView.swift
 //  BloomBoard
 //
-//  Created by Carlos Valentin on 10/16/25.
+//  Created by Carlos Valentin on 10/15/25.
 //
 
 import SwiftUI
 import SwiftData
 
 struct ContentView: View {
-    @Query var posts: [Post]
+    @Query(sort: [SortDescriptor(\Post.creationDate, order: .reverse)])
+    var posts: [Post]
     
     var body: some View {
         PostListView(posts: posts)
